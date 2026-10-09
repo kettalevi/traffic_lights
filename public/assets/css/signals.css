@@ -1,0 +1,47 @@
+/* Traffic signal board. Sizes are driven by --lamp so one stylesheet serves
+   a full-screen single road, a 2x2 overview and the small admin preview. */
+:root { --lamp: min(14vh, 30vw); }
+.board-grid { --lamp: min(6.5vh, 11vw); }
+.board-compact { --lamp: 34px; }
+
+body.display { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; background: #050607; color: #f1f3f5; min-height: 100vh; overflow: hidden; }
+body.kiosk { cursor: none; }
+
+.board-row { display: grid; grid-template-columns: 1fr; align-content: center; justify-items: center; }
+.board-grid .board-row { grid-template-columns: 1fr 1fr; }
+.board-grid .board-row, .board-single .board-row { height: 100vh; }
+.board-grid .board-row { max-width: 1000px; margin: 0 auto; }
+.board-compact .board-row { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 575px) { .board-compact .board-row { grid-template-columns: 1fr 1fr; } }
+
+.signal { text-align: center; padding: .5rem; }
+.signal-name { font-weight: 600; letter-spacing: .04em; text-transform: uppercase; opacity: .85;
+               font-size: calc(var(--lamp) * .38); }
+.board-compact .signal-name { font-size: .8rem; color: inherit; }
+
+.housing { display: inline-flex; flex-direction: column; gap: calc(var(--lamp) * .14);
+           background: #16181b; border: 3px solid #2b2f33; border-radius: calc(var(--lamp) * .35);
+           padding: calc(var(--lamp) * .2); margin: .35rem 0; }
+.lamp { width: var(--lamp); height: var(--lamp); border-radius: 50%; background: #25282b; transition: background .15s, box-shadow .15s; }
+.lamp.red.on    { background: #ff3b30; box-shadow: 0 0 calc(var(--lamp) * .5) #ff3b30; }
+.lamp.orange.on { background: #ff9f0a; box-shadow: 0 0 calc(var(--lamp) * .5) #ff9f0a; }
+.lamp.green.on  { background: #30d158; box-shadow: 0 0 calc(var(--lamp) * .5) #30d158; }
+.lamp.blink.on  { animation: blink 1s steps(1, end) infinite; }
+@keyframes blink { 50% { opacity: .08; box-shadow: none; } }
+
+/* Text + countdown repeat the light's meaning so colour is never the only cue. */
+.signal-text { font-weight: 700; font-size: calc(var(--lamp) * .42); line-height: 1.1; }
+.signal-count { font-variant-numeric: tabular-nums; font-size: calc(var(--lamp) * .6); font-weight: 300; opacity: .9; min-height: 1.2em; }
+.board-compact .signal-text { font-size: .8rem; }
+.board-compact .signal-count { font-size: 1rem; }
+.state-green  .signal-text { color: #30d158; }
+.state-orange .signal-text, .state-flash_orange .signal-text { color: #ff9f0a; }
+.state-red    .signal-text { color: #ff6b61; }
+.state-off    .housing { opacity: .25; }
+
+.link-banner { position: fixed; top: 0; left: 0; right: 0; background: #ff9f0a; color: #000; text-align: center;
+               font-weight: 700; padding: .35rem; display: none; z-index: 10; }
+.board-compact .link-banner { position: static; }
+.display-tools { position: fixed; right: .75rem; bottom: .75rem; z-index: 5; opacity: .35; }
+.display-tools:hover { opacity: 1; }
+body.kiosk .display-tools { display: none; }
